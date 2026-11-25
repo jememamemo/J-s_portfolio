@@ -1,0 +1,875 @@
+@font-face {
+    font-family: "Portfolio Segoe UI";
+    src: url("font/Segoe-UI-Regular.otf") format("opentype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
+html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #202820;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+}
+
+.background-video,
+.video-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.background-video {
+    z-index: 0;
+    object-fit: cover;
+}
+
+.video-overlay {
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.28);
+    pointer-events: none;
+}
+
+.category-wheel {
+    position: fixed;
+    top: 28px;
+    left: 32px;
+    z-index: 3;
+    width: min(280px, calc(100vw - 48px));
+    color: #fff;
+    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.9);
+}
+
+.category-reel {
+    height: 152px;
+    overflow: hidden;
+}
+
+.category-reel-track {
+    will-change: transform;
+}
+
+.category-reel-row {
+    height: 38px;
+    overflow: hidden;
+    color: rgba(255, 255, 255, 0.55);
+    font-family: "Portfolio Segoe UI", Arial, sans-serif;
+    font-size: 19px;
+    font-weight: 400;
+    line-height: 38px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: color 140ms ease-out, font-size 140ms ease-out, text-shadow 140ms ease-out;
+}
+
+.category-reel-row.is-active {
+    color: #fff;
+    font-size: clamp(26px, 4vw, 38px);
+    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.9);
+}
+
+.category-hint {
+    margin: 7px 0 0;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.screen-reader-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+}
+
+.site-logo-layer[popover] {
+    position: fixed;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+    border: 0;
+    background: transparent;
+    pointer-events: none;
+}
+
+.site-logo {
+    position: fixed;
+    top: 20px;
+    right: 24px;
+    z-index: 2147483647;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    transform-origin: 50% 10%;
+}
+
+.site-logo.is-dancing {
+    animation: logo-dance 700ms ease-in-out infinite alternate;
+}
+
+@keyframes logo-dance {
+    from {
+        transform: rotate(-12deg);
+    }
+
+    to {
+        transform: rotate(12deg);
+    }
+}
+
+.music-player {
+    display: grid;
+    flex: 0 1 460px;
+    min-width: 0;
+    height: 48px;
+    box-sizing: border-box;
+    grid-template-rows: minmax(18px, 1fr) minmax(22px, 1fr);
+    gap: 0 8px;
+    margin-left: auto;
+    padding: 2px 0 2px 8px;
+    color: #fff;
+    font-family: "Portfolio Segoe UI", Arial, sans-serif;
+}
+
+.music-player audio {
+    display: none;
+}
+
+.player-track-row {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.player-title-window {
+    position: relative;
+    left: -13px;
+    flex: 0 1 4ch;
+    min-width: 4ch;
+    width: 4ch;
+    max-width: 4ch;
+    overflow: hidden;
+    margin: 0 -8px 0 0;
+    transform: translateY(-3px);
+    text-align: left;
+    white-space: nowrap;
+    color: #fff;
+    text-shadow: 0 1px 3px #000;
+}
+
+.player-track-title {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    font-size: 11px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+    white-space: nowrap;
+}
+
+.player-track-title.is-scrolling {
+    max-width: none;
+    overflow: visible;
+    text-overflow: clip;
+    animation: player-marquee var(--marquee-duration) linear 2s infinite;
+}
+
+@keyframes player-marquee {
+    0%, 15% {
+        transform: translateX(0);
+    }
+
+    85%, 100% {
+        transform: translateX(calc(-1 * var(--marquee-distance)));
+    }
+}
+
+.player-progress-row time {
+    min-width: 21px;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    font-size: 7px;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 1px 3px #000;
+}
+
+.player-progress-row {
+    display: flex;
+    flex: 0 1 172px;
+    min-width: 72px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    transform: translateX(1px);
+}
+
+.player-progress-row time:last-child {
+    text-align: right;
+}
+
+.player-seek,
+.player-volume {
+    height: 8px;
+    margin: 0;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.player-seek {
+    flex: 1;
+    min-width: 16px;
+}
+
+.player-seek::-webkit-slider-runnable-track {
+    height: 2px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.75);
+}
+
+.player-seek::-webkit-slider-thumb {
+    width: 6px;
+    height: 6px;
+    margin-top: -2px;
+    appearance: none;
+    border-radius: 50%;
+    background: #fff;
+}
+
+.player-seek::-moz-range-track {
+    height: 2px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.75);
+}
+
+.player-seek::-moz-range-thumb {
+    width: 6px;
+    height: 6px;
+    border: 0;
+    border-radius: 50%;
+    background: #fff;
+}
+
+.player-controls {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    margin: 0;
+    transform: translateX(-1px);
+}
+
+.player-toolbar {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    transform: translateY(2px);
+}
+
+.player-control {
+    display: grid;
+    flex: 0 0 18px;
+    width: 18px;
+    height: 22px;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    text-shadow: 0 1px 3px #000;
+    cursor: pointer;
+}
+
+.player-control:hover:not(:disabled) {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.player-control:active:not(:disabled) {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.58);
+}
+
+.player-control:disabled,
+.player-seek:disabled,
+.player-volume:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.player-control:focus-visible,
+.player-seek:focus-visible,
+.player-volume:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+.player-control.is-active {
+    background: transparent;
+    color: #fff;
+    text-shadow: 0 0 5px #fff, 0 1px 3px #000;
+}
+
+.player-control.player-play {
+    font-size: 12px;
+}
+
+.player-pause-icon {
+    display: block;
+    width: 6px;
+    height: 10px;
+    box-sizing: border-box;
+    border-right: 2px solid currentColor;
+    border-left: 2px solid currentColor;
+}
+
+.player-control.player-repeat {
+    font-size: 14px;
+    transform: translateY(1px);
+}
+
+.player-repeat sup {
+    font-size: 8px;
+}
+
+.player-volume-control {
+    display: flex;
+    flex: 0 1 38px;
+    min-width: 36px;
+    align-items: center;
+}
+
+.player-volume {
+    width: 100%;
+    min-width: 16px;
+    height: 8px;
+    appearance: none;
+    background: transparent;
+}
+
+.player-volume::-webkit-slider-runnable-track {
+    height: 2px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.75);
+}
+
+.player-volume::-webkit-slider-thumb {
+    width: 7px;
+    height: 7px;
+    margin-top: -2.5px;
+    appearance: none;
+    border-radius: 50%;
+    background: #fff;
+}
+
+.player-volume::-moz-range-track {
+    height: 2px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.75);
+}
+
+.player-volume::-moz-range-thumb {
+    width: 7px;
+    height: 7px;
+    border: 0;
+    border-radius: 50%;
+    background: #fff;
+}
+
+.category-list button {
+    clip-path: inset(50%);
+}
+
+.category-wheel:focus-visible,
+.category-list button:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.8);
+    outline-offset: 5px;
+}
+
+.portfolio-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    width: min(760px, calc(100vw - 48px));
+    max-height: calc(100vh - 96px);
+    box-sizing: border-box;
+    padding: 24px;
+    overflow-y: auto;
+    color: #fff;
+    text-align: center;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+    transform: translate(-50%, -50%);
+}
+
+.portfolio-section {
+    transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.portfolio-section.is-changing {
+    opacity: 0;
+    transform: translateY(12px);
+}
+
+.see-button {
+    position: fixed;
+    bottom: 128px;
+    left: 50%;
+    z-index: 3;
+    display: inline-block;
+    min-width: 132px;
+    padding: 13px 30px;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 999px;
+    background: rgba(15, 20, 15, 0.58);
+    color: #fff;
+    font: 400 17px "Portfolio Segoe UI", Arial, sans-serif;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    transform: translateX(-50%);
+    transition: opacity 180ms ease;
+}
+
+.see-button.is-visible {
+    opacity: 1;
+}
+
+.see-button[hidden] {
+    display: none;
+}
+
+.see-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.see-button:focus-visible,
+.dialog-close:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 4px;
+}
+
+.portfolio-dialog {
+    width: min(920px, calc(100vw - 32px));
+    max-height: 88vh;
+    box-sizing: border-box;
+    margin: auto;
+    padding: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: none;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 16px;
+    background:
+        linear-gradient(rgba(15, 18, 17, 0.84), rgba(15, 18, 17, 0.9)),
+        url("img/134.png") center / cover;
+    color: #fff;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+    transition: opacity 180ms ease-out, display 180ms allow-discrete, overlay 180ms allow-discrete;
+}
+
+.portfolio-dialog[open] {
+    opacity: 1;
+    transform: none;
+}
+
+@starting-style {
+    .portfolio-dialog[open] {
+        opacity: 0;
+        transform: none;
+    }
+}
+
+.portfolio-dialog::backdrop {
+    background: transparent;
+    backdrop-filter: blur(0);
+    transition: background-color 180ms ease-out, backdrop-filter 180ms ease-out;
+}
+
+.portfolio-dialog[open]::backdrop {
+    background: rgba(0, 0, 0, 0.18);
+    backdrop-filter: blur(8px);
+}
+
+@starting-style {
+    .portfolio-dialog[open]::backdrop {
+        background: transparent;
+        backdrop-filter: blur(0);
+    }
+}
+
+.dialog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.dialog-title {
+    margin: 0;
+    font-family: "Portfolio Segoe UI", Arial, sans-serif;
+    font-size: clamp(20px, 4vw, 28px);
+    font-weight: 400;
+}
+
+.dialog-close {
+    flex: 0 0 auto;
+    padding: 8px 13px;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 999px;
+    background: transparent;
+    color: #fff;
+    font: inherit;
+    cursor: pointer;
+    transition: background-color 160ms ease;
+}
+
+.dialog-close:hover {
+    background: rgba(255, 255, 255, 0.14);
+}
+
+.dialog-content {
+    max-height: calc(88vh - 78px);
+    box-sizing: border-box;
+    padding: 30px 32px 36px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    text-align: center;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.65);
+}
+
+.portfolio-section h2,
+.dialog-section h2 {
+    margin: 8px 0 14px;
+    font-family: "Portfolio Segoe UI", Arial, sans-serif;
+    font-size: clamp(32px, 6vw, 56px);
+    font-weight: 400;
+}
+
+.portfolio-section p,
+.dialog-section p {
+    margin: 0 auto;
+    max-width: 580px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: clamp(16px, 2vw, 19px);
+    line-height: 1.65;
+}
+
+.portfolio-section .section-eyebrow,
+.dialog-section .section-eyebrow {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}
+
+.dialog-section[hidden] {
+    display: none;
+}
+
+.skill-groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 20px;
+    max-width: 760px;
+    margin: 30px auto 0;
+    text-align: left;
+}
+
+.skill-group {
+    padding: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 14px;
+    background: rgba(10, 12, 11, 0.68);
+}
+
+.skill-group h3 {
+    margin: 0 0 10px;
+    font-family: "Portfolio Segoe UI", Arial, sans-serif;
+    font-size: 21px;
+    font-weight: 400;
+}
+
+.project-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(220px, 0.85fr);
+    gap: 24px;
+    align-items: center;
+    max-width: 760px;
+    margin: 32px auto 0;
+    padding: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.06);
+    text-align: left;
+}
+
+.project-video-frame {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #000;
+}
+
+.project-video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.project-details h3 {
+    margin: 0 0 10px;
+    font-family: "Portfolio Segoe UI", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+}
+
+.project-details p {
+    margin: 0 0 16px;
+    font-size: 16px;
+    text-align: left;
+}
+
+.project-link-placeholder {
+    display: inline-block;
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 999px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+}
+
+.skill-list {
+    display: grid;
+    gap: 0;
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.skill-list li {
+    display: grid;
+    gap: 4px;
+    padding: 13px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.skill-list li:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.skill-name {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.skill-description {
+    color: rgba(255, 255, 255, 0.76);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.contact-list {
+    display: grid;
+    gap: 10px;
+    max-width: 580px;
+    margin: 28px auto 0;
+    padding: 0;
+    list-style: none;
+    text-align: left;
+}
+
+.contact-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.contact-placeholder {
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 14px;
+}
+
+.portfolio-section[hidden] {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    .category-wheel {
+        top: 20px;
+        left: 20px;
+    }
+
+    .category-reel-row {
+        font-size: 16px;
+    }
+
+    .portfolio-content {
+        padding: 16px;
+    }
+
+    .see-button {
+        bottom: 112px;
+    }
+
+    .portfolio-dialog {
+        width: calc(100vw - 28px);
+        max-height: 90vh;
+    }
+
+    .dialog-header {
+        padding: 14px 16px;
+    }
+
+    .dialog-content {
+        max-height: calc(90vh - 62px);
+        padding: 24px 20px 30px;
+    }
+
+    .project-card {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        margin-top: 24px;
+        padding: 14px;
+    }
+
+    .contact-list li {
+        padding: 12px;
+    }
+
+    .skill-group {
+        padding: 16px;
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+}
+
+.site-footer {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 3;
+    display: flex;
+    height: 58px;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 14px;
+    box-sizing: border-box;
+    padding: 0 12px;
+    background: url("img/Taskbar_texture_bottom.png") repeat-x bottom left;
+    background-size: auto 30px;
+}
+
+.site-clock {
+    font-family: "Portfolio Segoe UI", sans-serif;
+    color: #fff;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 1px 3px #000;
+    transform: translateY(14px);
+}
+
+@media (max-width: 600px) {
+    .site-footer {
+        gap: 6px;
+        height: 58px;
+        padding: 0 8px;
+    }
+
+    .music-player {
+        flex: 1 1 0;
+        height: 48px;
+        grid-template-rows: 20px 24px;
+        gap: 0 5px;
+        padding: 2px 0 2px 4px;
+    }
+
+    .player-track-row {
+        justify-content: flex-end;
+    }
+
+    .player-title-window {
+        flex-basis: 4ch;
+        min-width: 4ch;
+        max-width: 4ch;
+        margin-right: -5px;
+    }
+
+    .player-progress-row {
+        flex-basis: 132px;
+        min-width: 0;
+        gap: 2px;
+    }
+
+    .player-progress-row time {
+        min-width: 17px;
+    }
+
+    .player-control {
+        flex-basis: 18px;
+        width: 18px;
+    }
+
+    .player-volume-control {
+        flex-basis: 34px;
+        min-width: 26px;
+    }
+
+    .player-toolbar {
+        gap: 5px;
+    }
+
+    .site-clock {
+        font-size: 12px;
+    }
+}
